@@ -3,10 +3,13 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 
-urlpatterns = []
+
+urlpatterns = [
+    path("api/", include("api.urls")),
+]
 
 
 # Enable the Swagger UI and API schema generation only in DEBUG mode
