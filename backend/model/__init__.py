@@ -21,8 +21,7 @@ def top_suggestions():
     """
     Returns a list of movie IDs ..
     """
-    movies = data[(data["rating"] > 8.5) & (data["year"] > 2018)]
-    movies = movies.sample(6)
+    movies = data.sample(6)
     return [movie.id for movie in movies.itertuples()]
 
 def movies_recommendation(movie_title):
