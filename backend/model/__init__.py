@@ -1,6 +1,7 @@
 import pickle
 from django.conf import settings
 from pathlib import Path
+import re
 
 data, vector, model = None, None, None
 
@@ -24,6 +25,7 @@ def top_suggestions():
     movies = data.sample(6)
     return [movie.id for movie in movies.itertuples()]
 
+
 def movies_recommendation(movie_title):
     """
     Returns a list of similar movie IDs based on the given movie ID.
@@ -41,3 +43,22 @@ def movies_recommendation(movie_title):
 
     except IndexError:
         return []
+
+
+def search_movies(query):
+    """
+    Returns a list of movie IDs that match the search query.
+    """
+
+    safe_query = re.escape(query.strip())
+    filtered_movies = data[
+        data["title"].str.contains(safe_query, na=False, regex=True, case=False)
+    ]
+
+    if filtered_movies.empty:
+        return []
+
+    movies = [{'title':movie.title, 'id':movie.id} for movie in filtered_movies.itertuples()][:7]
+    movies.sort(key=lambda x: x['title'])
+    return movies
+    

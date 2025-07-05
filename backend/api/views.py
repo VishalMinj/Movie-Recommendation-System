@@ -1,11 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from model import top_suggestions, movies_recommendation
+from model import top_suggestions, movies_recommendation, search_movies
 from .utils import get_movies
-from .serializers import MovieSerializer
+from .serializers import MovieSerializer, MovieSearchSerializer
 from drf_spectacular.utils import extend_schema, OpenApiExample
-from drf_spectacular import openapi
 from drf_spectacular.types import OpenApiTypes
 
 
@@ -46,3 +45,14 @@ class SimilarMoviesRecommendationAPIView(APIView):
         data = get_movies(movies)
         serialized = MovieSerializer(data, many=True)
         return Response(serialized.data, status=status.HTTP_200_OK)
+
+class SearchMoviesAPIView(APIView):
+
+    @extend_schema(
+        tags=["Search"],
+        request=MovieSearchSerializer,
+    )
+    def post(self, request):
+        query = request.data.get("query", "")
+        movies = search_movies(query)
+        return Response(movies, status=status.HTTP_200_OK)
