@@ -17,15 +17,16 @@ const Carousal = () => {
   }
 
   if (error) {
-    return (
-      <ErrorPage/>
-    );
+    return <ErrorPage />;
   }
 
   return (
     <div className="flex flex-col gap-6 select-none pt-[.5rem] ">
-      <h1 className="text-2xl">Top Suggestions</h1>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 place-items-center">
+      <div>
+        <input type="text" placeholder="Search for a movie" className="w-full p-2 border border-gray-300 rounded outline-none"/>
+      </div>
+      <h1 className="text-2xl">Suggested for you</h1>
+      <div className="grid grid-cols-2 md:grid-cols-3  gap-4 sm:gap-6 place-items-center">
         {data.map((movie) => (
           <MovieCard
             key={movie.imdbID}
