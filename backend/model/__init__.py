@@ -24,3 +24,21 @@ def top_suggestions():
     movies = data[(data["rating"] > 8.5) & (data["year"] > 2018)]
     movies = movies.sample(6)
     return [movie.id for movie in movies.itertuples()]
+
+def movies_recommendation(movie_title):
+    """
+    Returns a list of similar movie IDs based on the given movie ID.
+    """
+    if not movie_title:
+        return []
+    try:
+        position = data[data["title"] == movie_title]
+        if position.empty:
+            return []
+        iloc_index = data.index.get_loc(position.index[0])
+
+        _, indices = model.kneighbors(vector[iloc_index], n_neighbors=7)
+        return [data.iloc[i]["id"] for i in indices[0][1:]]
+
+    except IndexError:
+        return []
