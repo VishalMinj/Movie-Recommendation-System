@@ -3,7 +3,7 @@ import Carousal from "../components/Carousal";
 
 const HomePage = () => {
   return (
-    <div className="min-h-dvh w-full pt-[calc(var(--navbar-height)+4rem)] flex flex-col items-center ">
+    <div className="px-[1rem] md:px-[2rem] lg:px-[4rem] min-h-dvh w-full pt-[var(--navbar-height)] flex flex-col items-center pb-[5rem] sm:pb-0">
       <Carousal />
     </div>
   );
