@@ -52,13 +52,14 @@ def search_movies(query):
 
     safe_query = re.escape(query.strip())
     filtered_movies = data[
-        data["title"].str.contains(safe_query, na=False, regex=True, case=False)
+        data["title"].str.contains(safe_query, regex=True, case=True, na=False)
     ]
 
     if filtered_movies.empty:
         return []
 
-    movies = [{'title':movie.title, 'id':movie.id} for movie in filtered_movies.itertuples()][:7]
-    movies.sort(key=lambda x: x['title'])
-    return movies
+    movies = [{'title':movie.title, 'id':movie.id} for movie in filtered_movies.itertuples()]
+    movies.sort(key=lambda x: x['title'].lower().find(safe_query.lower()))
+    movies.sort(key=lambda x: len(x['title']))
+    return movies[:7]
     

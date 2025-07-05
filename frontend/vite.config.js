@@ -21,6 +21,11 @@ export default ({ mode }) => {
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/recommendation/, ""),
         },
+        "/search": {
+          target: `${env.VITE_SEARCH_URL}`,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/search/, ""),
+        },
       },
     },
   });

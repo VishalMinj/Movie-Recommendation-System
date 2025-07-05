@@ -24,7 +24,7 @@ const MovieCard = ({runtime, imdbRating ,title, imdbID, poster}) => {
           <p className="text-sm text-gray-700">IMDB Rating: {imdbRating}</p>
         </div>
         <img
-          src={posterURL}
+          src={posterURL || null}
           alt={title}
           className="absolute z-1 inset-0 w-full h-full object-cover  transition-opacity duration-300 ease-in-out"
         />
