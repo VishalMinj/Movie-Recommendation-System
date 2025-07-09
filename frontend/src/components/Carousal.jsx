@@ -1,22 +1,18 @@
 import React from "react";
 import MovieCard from "./MovieCard";
 import { useQuery } from "@tanstack/react-query";
-import getSuggestions from "../api/suggestionAPI";
-import LoadingPage from "../pages/LoadingPage";
-import ErrorPage from "../pages/ErrorPage";
+
 import { useState } from "react";
 import getSearchMovies from "../api/searchAPI";
 import { useNavigate } from "react-router-dom";
 
-const Carousal = ({heading = "Suggested for you"}) => {
+const Carousal = ({
+  heading = "Suggested for you",
+  movies,
+  hideSearch = false,
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["suggestions"],
-    queryFn: getSuggestions,
-    staleTime: 1000 * 60 * 5,
-  });
 
   const {
     data: searchResults,
@@ -38,17 +34,9 @@ const Carousal = ({heading = "Suggested for you"}) => {
     setSearchQuery("");
   };
 
-  if (isLoading) {
-    return <LoadingPage />;
-  }
-
-  if (error) {
-    return <ErrorPage />;
-  }
-
   return (
     <div className="flex flex-col gap-6 select-none pt-[.5rem] ">
-      <div className="relative">
+      <div className={`relative ${hideSearch && "invisible"}`}>
         <input
           onChange={handleSearchChange}
           type="text"
@@ -87,7 +75,7 @@ const Carousal = ({heading = "Suggested for you"}) => {
       </div>
       <h1 className="text-2xl">{heading}</h1>
       <div className="grid grid-cols-2 md:grid-cols-3  gap-4 sm:gap-6 place-items-center">
-        {data.map((movie) => (
+        {movies.map((movie) => (
           <MovieCard
             key={movie.imdbID}
             imdbID={movie.imdbID}
