@@ -28,15 +28,15 @@ class SimilarMoviesRecommendationAPIView(APIView):
         request=OpenApiTypes.OBJECT,
         examples=[
             OpenApiExample(
-                name="Movie Title",
-                value={"movie_title": "Spider-Man"},
+                name="id",
+                value={"movie_id": "tt0111161"},
                 request_only=True,
             )
         ],
     )
     def post(self, request):
-        movie_title = request.data.get("movie_title", None)
-        movies = movies_recommendation(movie_title)
+        movie_tag = request.data.get("movie_id", None)
+        movies = movies_recommendation(movie_tag)
         if not movies:
             return Response(
                 {"message": "No similar movies found."},

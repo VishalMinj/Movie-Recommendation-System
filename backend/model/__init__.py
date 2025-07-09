@@ -26,20 +26,20 @@ def top_suggestions():
     return [movie.id for movie in movies.itertuples()]
 
 
-def movies_recommendation(movie_title):
+def movies_recommendation(movie_id):
     """
     Returns a list of similar movie IDs based on the given movie ID.
     """
-    if not movie_title:
+    if not movie_id:
         return []
     try:
-        position = data[data["title"] == movie_title]
+        position = data[data["id"] == movie_id]
         if position.empty:
             return []
         iloc_index = data.index.get_loc(position.index[0])
 
-        _, indices = model.kneighbors(vector[iloc_index], n_neighbors=7)
-        return [data.iloc[i]["id"] for i in indices[0][1:]]
+        _, indices = model.kneighbors(vector[iloc_index], n_neighbors=6)
+        return [data.iloc[i]["id"] for i in indices[0]]
 
     except IndexError:
         return []
