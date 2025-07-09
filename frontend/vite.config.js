@@ -23,6 +23,7 @@ export default ({ mode }) => {
         },
         "/search": {
           target: `${env.VITE_SEARCH_URL}`,
+          ws: true,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/search/, ""),
         },

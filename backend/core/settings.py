@@ -37,6 +37,9 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
     [
+        # For Socket
+        "daphne",
+        'channels',
         "django.contrib.admin",
         "django.contrib.auth",
         "django.contrib.contenttypes",
@@ -85,6 +88,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "core.wsgi.application"
+ASGI_APPLICATION = "core.asgi.application"
 
 
 # Database
@@ -154,4 +158,11 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Recommendation System API",
     "DESCRIPTION": "API for the Recommendation System Website",
     "VERSION": "1.0.0",
+}
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
 }

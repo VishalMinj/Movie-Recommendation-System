@@ -2,7 +2,6 @@ from django.urls import path
 from .views import (
     TopSuggestedMoviesAPIView,
     SimilarMoviesRecommendationAPIView,
-    SearchMoviesAPIView,
 )
 
 urlpatterns = [
@@ -15,10 +14,5 @@ urlpatterns = [
         "similar-recommendation-movies/",
         SimilarMoviesRecommendationAPIView.as_view(),
         name="similar movies recommendation",
-    ),
-    path(
-        "search-movies/",
-        SearchMoviesAPIView.as_view(),
-        name="search movies",
     ),
 ]

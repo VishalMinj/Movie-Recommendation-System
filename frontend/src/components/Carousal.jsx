@@ -1,9 +1,6 @@
 import React from "react";
 import MovieCard from "./MovieCard";
-import { useQuery } from "@tanstack/react-query";
-
-import { useState } from "react";
-import getSearchMovies from "../api/searchAPI";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Carousal = ({
@@ -11,35 +8,51 @@ const Carousal = ({
   movies,
   hideSearch = false,
 }) => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
+  const [ws, setWs] = useState(null);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const [searchResult, setSearchResult] = useState([]);
   const navigate = useNavigate();
 
-  const {
-    data: searchResults,
-    isLoading: isSearchLoading,
-    error: searchError,
-  } = useQuery({
-    queryKey: ["search", searchQuery],
-    queryFn: () => getSearchMovies(searchQuery),
-    enabled: searchQuery !== "",
-    staleTime: 1000 * 60 * 5,
-  });
 
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
+  useEffect(() => {
+    const websocket=new WebSocket("/search");
+    setWs(websocket);
+
+    websocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log(data);
+      
+      setSearchResult(data);
+      setIsSearchLoading(false);
+    };
+
+    return () => {
+      websocket.close();
+    };
+
+  }, []);
+
+
+  const handleSearch = (e) => {
+    setIsSearchLoading(true);
+    setSearchQuery(e.target.value);
+    ws.send(JSON.stringify({ query: searchQuery}));
   };
+  
 
   const handleSearchNavigation = (id) => {
     navigate(`/${id}`);
-    setSearchQuery("");
+    searchQuery.current.value = "";
   };
 
   return (
     <div className="flex flex-col gap-6 select-none pt-[.5rem] ">
       <div className={`relative ${hideSearch && "invisible"}`}>
         <input
-          onChange={handleSearchChange}
+          onChange={handleSearch}
           type="text"
+          value={searchQuery}
           placeholder="Search for a movie"
           className="w-full p-2 border border-gray-300 rounded outline-none peer"
         />
@@ -52,16 +65,16 @@ const Carousal = ({
         />
         <ul
           className={`${
-            searchQuery === "" && "hidden"
+            (searchQuery === "") && "hidden"
           } z-3 flex flex-col gap-2 absolute top-full left-0 w-full bg-white border border-gray-300 rounded shadow-lg mt-2 p-4`}
         >
-          {searchResults &&
-            (searchResults.length < 1 ? (
+          {searchResult &&
+            (searchResult.length < 1 ? (
               <li className="cursor-pointer hover:bg-gray-100 p-2 rounded">
                 No results found
               </li>
             ) : (
-              searchResults.map((movie) => (
+              searchResult.map((movie) => (
                 <li
                   key={movie.id}
                   onClick={() => handleSearchNavigation(movie.id)}

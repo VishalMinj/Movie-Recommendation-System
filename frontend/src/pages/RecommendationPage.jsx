@@ -9,7 +9,7 @@ import Carousal from "../components/Carousal";
 const RecommendationPage = () => {
   const { id } = useParams();
   const { data, isLoading, error } = useQuery({
-    queryKey: ["recommendation"],
+    queryKey: ["recommendation", id],
     queryFn: () => getRecommendations(id), // Pass the movie ID to the API function
     staleTime: 1000 * 60 * 5,
   });
