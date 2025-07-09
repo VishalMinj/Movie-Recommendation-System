@@ -4,18 +4,18 @@ import { useQuery } from "@tanstack/react-query";
 import getSuggestions from "../api/suggestionAPI";
 import LoadingPage from "../pages/LoadingPage";
 import ErrorPage from "../pages/ErrorPage";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import getSearchMovies from "../api/searchAPI";
+import { useNavigate } from "react-router-dom";
 
-const Carousal = () => {
+const Carousal = ({heading = "Suggested for you"}) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [inputFocused, setInputFocused] = useState(false);
-  const searchInputRef = useRef(null);
+  const navigate = useNavigate();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["suggestions"],
     queryFn: getSuggestions,
-    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 5,
   });
 
   const {
@@ -26,11 +26,16 @@ const Carousal = () => {
     queryKey: ["search", searchQuery],
     queryFn: () => getSearchMovies(searchQuery),
     enabled: searchQuery !== "",
-    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 5,
   });
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
+  };
+
+  const handleSearchNavigation = (id) => {
+    navigate(`/${id}`);
+    setSearchQuery("");
   };
 
   if (isLoading) {
@@ -45,9 +50,6 @@ const Carousal = () => {
     <div className="flex flex-col gap-6 select-none pt-[.5rem] ">
       <div className="relative">
         <input
-          ref={searchInputRef}
-          onFocus={() => setInputFocused(true)}
-          onBlur={() => setInputFocused(false)}
           onChange={handleSearchChange}
           type="text"
           placeholder="Search for a movie"
@@ -62,7 +64,7 @@ const Carousal = () => {
         />
         <ul
           className={`${
-            (searchQuery === "" || !inputFocused) && "hidden"
+            searchQuery === "" && "hidden"
           } z-3 flex flex-col gap-2 absolute top-full left-0 w-full bg-white border border-gray-300 rounded shadow-lg mt-2 p-4`}
         >
           {searchResults &&
@@ -73,7 +75,8 @@ const Carousal = () => {
             ) : (
               searchResults.map((movie) => (
                 <li
-                  key={movie.imdbID}
+                  key={movie.id}
+                  onClick={() => handleSearchNavigation(movie.id)}
                   className="cursor-pointer hover:bg-gray-100 p-2 rounded"
                 >
                   {movie.title}
@@ -82,7 +85,7 @@ const Carousal = () => {
             ))}
         </ul>
       </div>
-      <h1 className="text-2xl">Suggested for you</h1>
+      <h1 className="text-2xl">{heading}</h1>
       <div className="grid grid-cols-2 md:grid-cols-3  gap-4 sm:gap-6 place-items-center">
         {data.map((movie) => (
           <MovieCard
