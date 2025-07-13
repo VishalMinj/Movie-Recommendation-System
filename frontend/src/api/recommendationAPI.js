@@ -1,6 +1,8 @@
+import { RECOMMENDATION_URL } from "../utils/constants";
+
 export default async function getRecommendations(movieID) {
     try {
-        const response = await fetch('/recommendation', {
+        const response = await fetch(`${RECOMMENDATION_URL}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

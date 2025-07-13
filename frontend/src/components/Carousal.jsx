@@ -2,6 +2,7 @@ import React from "react";
 import MovieCard from "./MovieCard";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { SEARCH_URL } from "../utils/constants";
 
 const Carousal = ({
   heading = "Suggested for you",
@@ -16,7 +17,7 @@ const Carousal = ({
 
 
   useEffect(() => {
-    const websocket=new WebSocket("/search");
+    const websocket=new WebSocket(`${SEARCH_URL}`);
     setWs(websocket);
 
     websocket.onmessage = (event) => {
@@ -41,7 +42,7 @@ const Carousal = ({
 
   const handleSearchNavigation = (id) => {
     navigate(`/${id}`);
-    searchQuery.current.value = "";
+    setSearchQuery("");
   };
 
   return (
