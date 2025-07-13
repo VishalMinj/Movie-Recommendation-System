@@ -9,7 +9,6 @@ export default ({ mode }) => {
 
   return defineConfig({
     plugins: [react(), tailwindcss()],
-    base: '/Movie-Recommendation-System/frontend',
     server: {
       proxy: {
         "/suggestion": {
